@@ -9,10 +9,11 @@ const { presets } = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
   // Add every react-native package that needs compiling
   // 'react-native-gesture-handler',
+  "react-native-vector-icons",
 ].map((moduleName) => path.resolve(appDirectory, `node_modules/${moduleName}`));
 
 const babelLoaderConfiguration = {
-  test: /\.js$|tsx?$/,
+  test: /\.js$|.ts$|tsx?$/,
   // Add every directory that needs to be compiled by Babel during the build.
   include: [
     path.resolve(__dirname, "index.web.js"), // Entry to your application
@@ -49,6 +50,12 @@ const imageLoaderConfiguration = {
   },
 };
 
+const vectorIconsLoaderConfiguration = {
+  test: /\.ttf$/,
+  loader: "url-loader", // or directly file-loader
+  include: path.resolve(__dirname, "node_modules/react-native-vector-icons"),
+};
+
 module.exports = {
   entry: {
     app: path.join(__dirname, "index.web.js"),
@@ -62,6 +69,17 @@ module.exports = {
     extensions: [".web.tsx", ".web.ts", ".tsx", ".ts", ".web.js", ".js"],
     alias: {
       "react-native$": "react-native-web",
+      conditionNames: [
+        "assets",
+        "components",
+        "constants",
+        "containers",
+        "utils",
+      ],
+      // conditions used for the "exports" and "imports" field in description file
+      roots: [path.resolve(__dirname, "src")],
+      // plugins: ["module-resolver"],
+      onlyModule: false,
     },
   },
   module: {
@@ -69,6 +87,20 @@ module.exports = {
       babelLoaderConfiguration,
       imageLoaderConfiguration,
       svgLoaderConfiguration,
+      vectorIconsLoaderConfiguration,
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              limit: false,
+            },
+          },
+        ],
+        type: "asset/resource",
+        include: path.resolve(__dirname, "src/assets/fonts"),
+      },
     ],
   },
   plugins: [
