@@ -1,5 +1,5 @@
-import {useRef, useEffect, useCallback, useState} from 'react';
-import {Dimensions} from 'react-native';
+import { useRef, useEffect, useCallback, useState } from "react";
+import { Dimensions } from "react-native";
 
 export function usePrevious(value) {
   const ref = useRef();
@@ -10,9 +10,9 @@ export function usePrevious(value) {
 }
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
-export const useMount = func => useEffect(() => func(), []);
+export const useMount = (func) => useEffect(() => func(), []);
 
-export const useMountedState = (): (() => boolean) => {
+export const useMountedState = () => {
   const mountedRef = useRef();
   // Basically the same as "useDidMount" because it has no dependencies
   useEffect(() => {
@@ -33,18 +33,18 @@ export const useCancelablePromise = () => {
   // Create our function that accepts a promise
   // Note the second parameter is a callback for onCancel. You might need this in rare cases
   return useCallback(
-    (promise: Promise, onCancel?: () => void) =>
+    (promise, onCancel) =>
       // Wrap the given promise in a new promise
       new Promise()((resolve, reject) => {
         promise
-          .then(result => {
+          .then((result) => {
             // Only resolve the returned promise if mounted
             if (isMounted()) {
               // Resolve with the result of the wrapped promise
               resolve(result);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             // Only reject the returned promise if mounted
             if (isMounted()) {
               // Reject with the error of the wrapped promise
@@ -58,7 +58,7 @@ export const useCancelablePromise = () => {
             }
           });
       }),
-    [isMounted],
+    [isMounted]
   );
 };
 
@@ -69,7 +69,7 @@ export const useAnimationFrame = (callback, isEnd = false) => {
   const previousTimeRef = useRef();
 
   const animate = useCallback(
-    time => {
+    (time) => {
       if (previousTimeRef.current !== undefined) {
         const deltaTime = time - previousTimeRef.current;
         callback(deltaTime);
@@ -77,7 +77,7 @@ export const useAnimationFrame = (callback, isEnd = false) => {
       previousTimeRef.current = time;
       requestRef.current = requestAnimationFrame(animate);
     },
-    [callback],
+    [callback]
   );
 
   const checkLoad = useCallback(() => {
@@ -106,14 +106,14 @@ export const useAnimationFrame = (callback, isEnd = false) => {
 };
 
 export function useOrientation() {
-  const [orientation, setOrientation] = useState('PORTRAIT');
+  const [orientation, setOrientation] = useState("PORTRAIT");
 
   useEffect(() => {
-    Dimensions.addEventListener('change', ({window: {width, height}}) => {
+    Dimensions.addEventListener("change", ({ window: { width, height } }) => {
       if (width < height) {
-        setOrientation('PORTRAIT');
+        setOrientation("PORTRAIT");
       } else {
-        setOrientation('LANDSCAPE');
+        setOrientation("LANDSCAPE");
       }
     });
   }, []);

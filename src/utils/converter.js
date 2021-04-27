@@ -1,8 +1,8 @@
-import {Dimensions, PixelRatio} from 'react-native';
+import { Dimensions, PixelRatio } from "react-native";
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
-export const setValueByWidth = (value: Number, isTrue: ?Boolean) => {
+export const setValueByWidth = (value, isTrue) => {
   if (isTrue) {
     return (width / 1920) * value;
   }
@@ -14,4 +14,4 @@ setValueByWidth.defaultProps = {
   isTrue: true,
 };
 
-export const scaleDP = value => PixelRatio.roundToNearestPixel(value); //value * (160 / 224);
+export const scaleDP = (value) => PixelRatio.roundToNearestPixel(value); //value * (160 / 224);
